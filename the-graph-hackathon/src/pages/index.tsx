@@ -17,7 +17,7 @@ const Home: React.FC = () => {
         <p>
           Welcome to our CryptoPunk valuation tool, where we leverage the power
           of The Graph, a decentralized protocol for indexing and querying
-          blockchain data. Here's how it works:
+          blockchain data. Here&apos;s how it works:
         </p>
         <p>
           Simply enter the ID of your CryptoPunk NFT along with your desired ask
