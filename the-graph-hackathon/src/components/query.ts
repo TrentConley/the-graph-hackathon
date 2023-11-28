@@ -119,10 +119,13 @@ export async function getPriceHistory(startDate: number, endDate: number) {
 
       // Calculate volatility (standard deviation of price changes)
       const meanChange =
-        priceChanges.reduce((a, b) => a + b, 0) / priceChanges.length;
+        priceChanges.reduce((a: number, b: number) => a + b, 0) /
+        priceChanges.length;
       const volatility = Math.sqrt(
-        priceChanges.reduce((a, b) => a + Math.pow(b - meanChange, 2), 0) /
-          priceChanges.length
+        priceChanges.reduce(
+          (a: number, b: number) => a + Math.pow(b - meanChange, 2),
+          0
+        ) / priceChanges.length
       );
 
       // Calculate average volume
