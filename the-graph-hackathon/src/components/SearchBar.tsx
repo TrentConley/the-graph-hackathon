@@ -7,15 +7,21 @@ const SearchBar = () => {
   const [askPrice, setAskPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState("");
+  const [salesData, setSalesData] = useState([]); // State for sales data
+  const [priceHistoryInfo, setPriceHistoryInfo] = useState(""); // State for price history info
 
   const handleSearch = async () => {
     setIsLoading(true);
     setResult("");
+    setSalesData([]);
+    setPriceHistoryInfo("");
+
     try {
       const data = await getPunkDetails(inputValue);
 
       let totalRatios = 0;
       let saleCount = 0;
+      let sales: any = []; // Array to store sales information
 
       if (data && data.punk) {
         for (const event of data.punk.events) {
@@ -28,9 +34,10 @@ const SearchBar = () => {
               Web3.utils.fromWei(salePriceWei.toString(), "ether")
             );
 
-            console.log(
-              `Sale on ${formattedDate}, Amount: ${salePriceEth} ETH`
-            );
+            sales.push({
+              date: saleDate,
+              text: `Sale on ${formattedDate}, Amount: ${salePriceEth} ETH`,
+            });
 
             console.log(`Sale on ${formattedDate}, Amount: ${event.amount}`);
             const oneMonthPrior = saleTimestamp - 2592000; // Subtracting one month in seconds
@@ -56,6 +63,13 @@ const SearchBar = () => {
           }
         }
       }
+      // Sort the sales based on the date
+      sales.sort((a: any, b: any) => b.date - a.date);
+
+      // Extract the formatted text from the sorted array
+      const sortedSalesData = sales.map((sale: any) => sale.text);
+
+      setSalesData(sortedSalesData); // Update state with sorted sales information
 
       // Calculate and log the average ratio
       const averageRatio = saleCount > 0 ? totalRatios / saleCount : 0;
@@ -64,18 +78,14 @@ const SearchBar = () => {
       const today = Math.floor(Date.now() / 1000);
       const oneMonthAgo = today - 2592000;
       const priceHistoryToday = await getPriceHistory(oneMonthAgo, today);
-      console.log(`Price history for the past month:`, priceHistoryToday);
 
-      // Calculate the product of the average ratio and the one month change in price
       let product = 0;
       if (priceHistoryToday && "oneMonthPriceChange" in priceHistoryToday) {
         product = averageRatio * priceHistoryToday.oneMonthPriceChange;
       }
-      console.log(
-        `Product of Average Ratio and One Month Price Change: ${product}`
-      );
+
       const askPriceFloat = parseFloat(askPrice);
-      const margin = 0.02 * product; // 2% margin
+      const margin = 0.02 * product;
       let message = "The NFT is priced appropriately.";
       if (askPriceFloat > product + margin) {
         message = "The NFT is overpriced.";
@@ -104,7 +114,7 @@ const SearchBar = () => {
         type="text"
         value={askPrice}
         onChange={(e) => setAskPrice(e.target.value)}
-        placeholder="Enter Ask Price"
+        placeholder="Enter ETH Ask Price"
       />
       <button
         className="search-button"
@@ -116,7 +126,15 @@ const SearchBar = () => {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <div className="result">{result}</div>
+        <div>
+          <div className="result">{result}</div>
+          <div className="sales-data">
+            {salesData.map((sale, index) => (
+              <div key={index}>{sale}</div>
+            ))}
+          </div>
+          <div className="price-history-info">{priceHistoryInfo}</div>
+        </div>
       )}
     </div>
   );
