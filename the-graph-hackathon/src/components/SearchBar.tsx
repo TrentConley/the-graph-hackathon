@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { getPunkDetails } from "./query";
+import { getPriceHistory } from "./query";
 
 interface SearchBarProps {
   onSearch: (id: string) => void; // Function to handle the search
@@ -11,6 +12,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const handleSearch = async () => {
     console.log("searching");
     const data = await getPunkDetails(inputValue);
+    const moredata = await getPriceHistory(1640995200, 1672444800);
+    console.log(moredata);
+
     if (data && data.punk) {
       data.punk.events.forEach((event: any) => {
         if (event.type === "SALE") {
