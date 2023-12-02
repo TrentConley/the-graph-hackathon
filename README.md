@@ -22,7 +22,8 @@ This project, developed during The Graph Hackathon, presents a specialized tool 
 
 ## Website URL
 
-The application is hosted at: CryptoPunk Valuation Tool visit www.the-graph-hackathon-6l2l.vercel.app
+The application is hosted at: CryptoPunk Valuation Tool visit https://the-graph-hackathon-6l2l.vercel.app/
+Please copy and paste the link into your search bar if you get an error.
 
 ## Repository Structure
 
